@@ -10,7 +10,7 @@ public class QmDbContext : DbContext
     private static readonly string TestAccountNumber = "1234567890";
     private static readonly decimal TestAccountBalance = 500;
 
-    private static readonly Account TestAccount = new Account
+    private static readonly Account TestAccount = new()
     {
         AccountId = TestAccountId,
         UserId = TestUserId,
@@ -25,7 +25,11 @@ public class QmDbContext : DbContext
   
     private void LoadAccounts()
     {
-        Accounts.Add(TestAccount);
+        if (!Accounts.Any(a => a.AccountId == TestAccountId))
+        {
+            Accounts.Add(TestAccount);
+            SaveChanges();
+        }
     }  
     
     public DbSet<Account> Accounts { get; set; }

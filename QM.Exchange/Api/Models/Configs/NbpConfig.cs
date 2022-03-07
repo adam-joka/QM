@@ -2,5 +2,6 @@
 
 public class NbpConfig
 {
-    public string ApiUrl { get; set; }
+    public string BaseApiUrl { get; set; }
+    public string Name { get; set; }
 }
