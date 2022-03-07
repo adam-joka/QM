@@ -38,13 +38,8 @@ public class ZlotysToEuros
                 // /exchangerates/rates/a/chf/
                 // TODO: add cachinig to minimaze calls
 
-                Account account = await _dbContext.Accounts.FirstOrDefaultAsync(a =>
+                Account account = await _dbContext.Accounts.FirstAsync(a =>
                     a.UserId == request.UserId && a.AccountNumber == request.AccountNumber, cancellationToken);
-
-                if (account == null)
-                {
-                    return null;
-                }
 
                 NpbResponse nbpRate = await GetExchangeRateFromNbpApi(cancellationToken);
 
@@ -81,10 +76,14 @@ public class ZlotysToEuros
 
         public class QueryValidator : AbstractValidator<Query>
         {
-            public QueryValidator()
+            public QueryValidator(QmDbContext dbContext)
             {
                 RuleFor(q => q.AccountNumber).NotEmpty();
                 RuleFor(q => q.UserId).NotEmpty();
+                
+                RuleFor(q => q)
+                    .MustAsync(async (query,cancellationToken) => await dbContext.Accounts.AnyAsync(a => a.UserId == query.UserId && a.AccountNumber == query.AccountNumber))
+                    .WithMessage("Requested account does not exist.");
             }
         }
     }
