@@ -1,13 +1,20 @@
-using Api.Data;
 using Api.Features;
 using Api.Infrastructure.Behaviours;
-using Api.Models.Configs;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using PeopleEndpoint;
+using Persistence;
+using QuotesEndpoint;
+using Tools;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddEndpointDefinitions
+(
+    typeof(QuotesEndpointDefinition), 
+    typeof(PeopleEndpointDefinition));
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -31,19 +38,6 @@ builder.Services.AddValidatorsFromAssemblies(new[] { theAssembly });
 #endregion
 
 
-
-builder.Services.AddDbContext<QmDbContext>(options=>options.UseInMemoryDatabase("QmDbContext"));
-builder.Services.AddScoped<QmDbContext>();
-
-var nbpConfigSection = builder.Configuration.GetSection("NbpConfig");
-builder.Services.Configure<NbpConfig>(nbpConfigSection);
-var npbConfig = nbpConfigSection.Get<NbpConfig>();
-
-builder.Services.AddHttpClient(npbConfig.Name, client =>
-{
-    client.BaseAddress = new Uri(npbConfig.BaseApiUrl);
-});
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -59,14 +53,12 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapGet("/account/{userId}/{accountNumber}/euros",
-    async (string accountNumber, Guid userId, IMediator mediator) =>
-    {
-        var euros = await mediator.Send(
-                new ZlotysToEuros.Query {AccountNumber = accountNumber, UserId = userId})
-            .ConfigureAwait(false);
+builder.Services.AddDbContext<QuotesDbContext>();
 
-        return euros == null ? Results.NotFound() : Results.Ok(euros);
-    });
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetService<QuotesDbContext>();
+    context.Database.Migrate();
+}
 
 app.Run();
