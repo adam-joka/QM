@@ -5,6 +5,8 @@ public class BaseEntity
     public int Id { get; }
     public DateTime CreatedOn { get; set; }
     public DateTime UpdatedOn { get; set; }
+    
+    public DateTime? DeletedOn { get; set; }
 
     public override bool Equals(object? obj)
     {

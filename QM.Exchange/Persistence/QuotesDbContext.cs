@@ -11,6 +11,7 @@ public class QuotesDbContext : DbContext, IQuotesDbContext
     private readonly ILoggerFactory _loggerFactory;
     private readonly QuotesDbContextConfiguration _configuration;
 
+    
     public QuotesDbContext(ILoggerFactory loggerFactory, IOptions<QuotesDbContextConfiguration> configuration)
     {
         _loggerFactory = loggerFactory;
@@ -39,6 +40,10 @@ public class QuotesDbContext : DbContext, IQuotesDbContext
         foreach (var entry in ChangeTracker.Entries<BaseEntity>())
         {
             entry.Entity.UpdatedOn = now;
+            if (entry.State == EntityState.Deleted)
+            {
+                entry.Entity.DeletedOn = now;
+            }
         }
     }
 
