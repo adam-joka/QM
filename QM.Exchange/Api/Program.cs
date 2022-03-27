@@ -21,6 +21,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.ConfigureSwaggerGen(options =>
+{
+    options.CustomSchemaIds(x => x.FullName);
+});
+
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 
 builder.Services.Configure<QuotesDbContextConfiguration>(builder.Configuration.GetSection("QuotesDbContextConfiguration"));
@@ -35,6 +40,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseEndpointDefinitions();
 
 app.UseHttpsRedirection();
 

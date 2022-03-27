@@ -53,6 +53,8 @@ public class Add
             RuleFor(c => c.AuthorId)
                 .MustAsync(async (id, cancellationToken) => await dbContext.Persons.AnyAsync(p => p.Id == id, cancellationToken))
                 .WithMessage("Quote author not found.");
+
+            RuleFor(c => c.Contents).NotEmpty();
         }
     }
 }

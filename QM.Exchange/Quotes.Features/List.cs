@@ -23,6 +23,7 @@ public class List
                 => await _dbContext.Quotes.Select(q => new QuoteModel
                 {
                     Id = q.Id,
+                    Contents = q.Contents,
                     Author = new PersonModel
                     {
                         Id = q.AuthorId,
