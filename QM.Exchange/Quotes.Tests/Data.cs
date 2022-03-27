@@ -1,9 +1,9 @@
 ﻿namespace Quotes.Tests;
 
 using System.Collections.Generic;
+using Application.Common.Interfaces;
 using Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Options;
 using Persistence;
 
 public static class Data
@@ -49,16 +49,12 @@ public static class Data
 
     public static QuotesDbContext TestDbContext()
     {
-        var contextOptions = new DbContextOptionsBuilder<QuotesDbContext>()
-            .UseInMemoryDatabase("QuotesTest")
-            .ConfigureWarnings(b => b.Ignore(InMemoryEventId.TransactionIgnoredWarning))
-            .Options;
-
-        using var context = new QuotesDbContext(contextOptions);
-
+        var context = new QuotesDbContext(
+            Options.Create(new QuotesDbContextConfiguration { DbPath = "test.db"}));
+        
         context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
-
+        
         context.AddRange(FrankZappa, AlbertEinstein);
 
         context.SaveChanges();

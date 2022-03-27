@@ -8,19 +8,12 @@ using Microsoft.Extensions.Options;
 
 public class QuotesDbContext : DbContext, IQuotesDbContext
 {
-    private readonly ILoggerFactory _loggerFactory = null!;
-    private readonly QuotesDbContextConfiguration _configuration = null!;
+    private readonly QuotesDbContextConfiguration _configuration;
 
     
-    public QuotesDbContext(ILoggerFactory loggerFactory, IOptions<QuotesDbContextConfiguration> configuration)
+    public QuotesDbContext(IOptions<QuotesDbContextConfiguration> configuration)
     {
-        _loggerFactory = loggerFactory;
         _configuration = configuration.Value;
-    }
-
-    public QuotesDbContext(DbContextOptions<QuotesDbContext> options) : base(options)
-    {
-        
     }
     
     public DbSet<Quote> Quotes { get; set; } = null!;
@@ -55,9 +48,5 @@ public class QuotesDbContext : DbContext, IQuotesDbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlite($"Data Source={_configuration.DbPath}");
-        
-#if DEBUG
-        optionsBuilder.UseLoggerFactory(_loggerFactory);  
-#endif
     }
 }
