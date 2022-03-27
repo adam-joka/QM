@@ -3,6 +3,8 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Tools;
 
@@ -18,6 +20,19 @@ public class QuotesEndpointDefinition : IEndpointDefinition
 
     public void DefineEndpoints(WebApplication app)
     {
-        throw new NotImplementedException();
+        app.MapGet("/quotes",
+            async (IMediator mediator) =>
+                Results.Ok(await mediator.Send(new Quotes.Features.List.Query())
+                    .ConfigureAwait(false)));
+        
+        app.MapPost("/quotes",
+            async ([FromBody] Quotes.Features.Add.Command request, IMediator mediator) =>
+                Results.Ok(await mediator.Send(request)
+                    .ConfigureAwait(false)));
+        
+        app.MapPut("/quotes",
+            async ([FromBody] Quotes.Features.Update.Command request, IMediator mediator) =>
+                Results.Ok(await mediator.Send(request)
+                    .ConfigureAwait(false)));
     }
 }

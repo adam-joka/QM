@@ -1,6 +1,5 @@
-using Api.Features;
 using Api.Infrastructure.Behaviours;
-using FluentValidation;
+using Application.Common.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using PeopleEndpoint;
@@ -24,6 +23,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 
+builder.Services.Configure<QuotesDbContextConfiguration>(builder.Configuration.GetSection("QuotesDbContextConfiguration"));
+builder.Services.AddDbContext<QuotesDbContext>();
+
+builder.Services.AddScoped<IQuotesDbContext>(provider => provider.GetService<QuotesDbContext>());
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -39,12 +42,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-builder.Services.AddDbContext<QuotesDbContext>();
-
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetService<QuotesDbContext>();
-    context.Database.Migrate();
+    scope.ServiceProvider.GetService<QuotesDbContext>()?.Database.Migrate();
 }
 
 app.Run();

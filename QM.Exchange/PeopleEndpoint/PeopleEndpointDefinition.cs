@@ -8,11 +8,11 @@ public class PeopleEndpointDefinition : IEndpointDefinition
 {
     public void DefineServices(IServiceCollection services)
     {
-        throw new NotImplementedException();
+        // TODO: implement
     }
 
     public void DefineEndpoints(WebApplication app)
     {
-        throw new NotImplementedException();
+        // TODO: implement
     }
 }
