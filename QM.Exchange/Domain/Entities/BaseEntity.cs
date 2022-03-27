@@ -1,30 +1,11 @@
 ﻿namespace Domain.Entities;
 
+using System.ComponentModel.DataAnnotations;
+
 public class BaseEntity
 {
-    public int Id { get; }
+    [Key]
+    public int Id { get; set; }
     public DateTime CreatedOn { get; set; }
     public DateTime UpdatedOn { get; set; }
-    
-    public DateTime? DeletedOn { get; set; }
-
-    public override bool Equals(object? obj)
-    {
-        if (obj is BaseEntity entity)
-        {
-            return entity.Id == Id;
-        }
-
-        return false;
-    }
-    
-    public override int GetHashCode()
-    {
-        return HashCode.Combine(Id);
-    }
-
-    public bool IsTransient()
-    {
-        return Id == default;
-    }
 }

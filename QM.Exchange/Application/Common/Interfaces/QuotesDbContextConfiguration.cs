@@ -2,5 +2,5 @@
 
 public class QuotesDbContextConfiguration
 {
-    public string DbPath { get; set; }
+    public string DbPath { get; set; } = string.Empty;
 }

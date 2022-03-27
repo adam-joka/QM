@@ -11,8 +11,7 @@ using Tools;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointDefinitions
-(
+builder.Services.AddEndpointDefinitions(
     typeof(QuotesEndpointDefinition), 
     typeof(PeopleEndpointDefinition));
 
@@ -23,20 +22,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var theAssembly = typeof(ZlotysToEuros).Assembly;
-
-#region MediatR
-// need to register mediatr from each project
-builder.Services.AddMediatR(theAssembly);
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
-
-
-#endregion
-
-#region Fluent Validation
-builder.Services.AddValidatorsFromAssemblies(new[] { theAssembly });
-#endregion
-
 
 var app = builder.Build();
 

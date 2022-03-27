@@ -2,6 +2,7 @@
 
 public class Quote : BaseEntity
 {
-    public int PersonId { get; set; }
-    public string Contents { get; set; }
+    public int AuthorId { get; set; }
+    public Person Author { get; set; } = null!;
+    public string Contents { get; set; } = null!;
 }
