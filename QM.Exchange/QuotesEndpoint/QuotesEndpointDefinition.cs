@@ -24,6 +24,11 @@ public class QuotesEndpointDefinition : IEndpointDefinition
             async (IMediator mediator) =>
                 Results.Ok(await mediator.Send(new Quotes.Features.List.Query())
                     .ConfigureAwait(false)));
+        
+        app.MapGet("/quotes/random",
+            async (IMediator mediator) =>
+                Results.Ok(await mediator.Send(new Quotes.Features.Random.Query())
+                    .ConfigureAwait(false)));
 
         app.MapPost("/quotes",
             async ([FromBody] Quotes.Features.Add.Command request, IMediator mediator) =>
