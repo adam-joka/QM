@@ -9,7 +9,6 @@
     <ItemGroup>
       <PackageReference Include="FluentValidation" Version="10.4.0" />
       <PackageReference Include="MediatR" Version="10.0.1" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.3" />
     </ItemGroup>
 
     <ItemGroup>
